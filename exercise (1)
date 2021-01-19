@@ -1,0 +1,110 @@
+Create a Java program to do following:
+
+Suppose we have collection of products, we need to fill products names and prices into arrays, we can't ask the user how many products they have but every time the user enters a product name and price, we ask the user if wants to add more.
+keep going until the user decides to stop.
+
+Then find which product is having discount how? if the price less than 100, then no discount, otherwise yes.
+then split the names array into 2 arrays, one for discounted products and the other for non-discounted products.
+Then find the average of prices of each array.
+if you want to do more, then do.
+
+
+import java.util.*;
+public class ProductTest {
+	public static Scanner  input = new Scanner(System.in);
+	public static int dIndex=-1;//index for the discounted array
+	public static int nIndex=-1;//index for the nonDiscounted array
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String products[] = new String [100];
+		double prices[] =new double [100];
+		//create 2 arrays one for discounted products and one for non-discounted products
+		String discounted[]=new String[100];
+		String nonDiscounted[]=new String[100];
+		
+		int size=reading(products,prices);//this is the actual number of products
+		for(int i=0;i<size;i++)
+			System.out.println("product name:"+products[i]+" product price:"+prices[i]);
+		
+		splitting(products,prices,size,discounted,nonDiscounted);
+		System.out.println("Discounted Products");
+		printing(products,discounted,prices,dIndex+1,size);
+		System.out.println("Non-Discounted Products");
+		printing(products,nonDiscounted,prices,nIndex+1,size);
+		
+		
+		double dAVG = AVG(discounted,products,prices,dIndex+1,size);
+		double nAVG= AVG(nonDiscounted,products,prices,nIndex+1,size);
+		System.out.println("Average of dicounted products = "+dAVG);
+		System.out.println("Average of non-dicounted products = "+nAVG);
+		
+
+	}
+	//Filling method
+	public static int reading(String products[],double prices[])
+	{
+		int i=0;
+		while(true) {
+			System.out.println("Enter the product name:");
+			products[i]=input.next();
+			System.out.println("Enter the price:");
+			prices[i]=input.nextDouble();
+			i++;
+			System.out.println("To add more procucts press any number or zero to stop");
+			int choice = input.nextInt();
+			if(choice==0)
+				break;
+		}
+		return i;
+	}
+	public static Boolean isDiscounted(double price)
+	{
+		if (price<100)
+			return false;
+		else
+			return true;
+		
+	}
+	
+	public static void splitting(String products[],double prices[],int size,String discounted[],String nonDiscounted[])
+	{
+		
+		for(int i=0;i<size;i++)
+			if(isDiscounted(prices[i])) {
+				dIndex++;
+				discounted[dIndex]=products[i];
+			}
+			else
+			{
+				nIndex++;
+				nonDiscounted[nIndex]=products[i];
+			}
+	}
+	public static void printing(String products[],String names[],double prices[],int size,int fullSize)
+	{
+		for(int i=0;i<size;i++) {
+			double price = findProductPrice(products,prices,fullSize,names[i]);
+			System.out.println("product:"+names[i]+" price:"+price);
+		}
+		
+	}
+	public static double findProductPrice(String products[],double prices[],int size, String name)
+	{
+		for(int i=0;i<size;i++)
+			if(name.equals(products[i]))
+				return prices[i];
+		return -1;
+	}
+	public static double AVG(String names[],String products[],double prices[],int size,int fullSize)
+	{
+		double sum=0;
+		for(int i=0;i<size;i++)
+		{
+			double price = findProductPrice(products,prices,fullSize,names[i]);
+			sum+=price;
+		}
+		return sum/size;
+	}
+
+}
